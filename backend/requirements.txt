@@ -1,0 +1,21 @@
+# ===== 核心依赖（必须） =====
+fastapi
+uvicorn
+python-multipart
+python-docx
+Pillow
+chardet
+jieba
+numpy
+pydantic
+aiofiles
+
+# ===== 向量检索（推荐，已安装） =====
+sentence-transformers
+faiss-cpu
+
+# ===== 图片OCR（推荐，已安装） =====
+easyocr
+
+# ===== 视频处理（推荐，已安装） =====
+opencv-python

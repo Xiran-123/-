@@ -1,0 +1,25 @@
+# Python
+__pycache__/
+*.py[cod]
+*.egg-info/
+.eggs/
+
+# 虚拟环境
+venv/
+.env
+
+# 用户数据（隐私，不上传）
+data/uploads/
+data/knowledge/
+data/persona/
+data/knowledge_graph/
+
+# 测试数据
+test_chat.txt
+
+# 保留空目录
+!data/.gitkeep
+
+# 系统文件
+.DS_Store
+Thumbs.db

@@ -1,0 +1,224 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>幻象机 · 人设知识库</title>
+    <link rel="stylesheet" href="/static/css/style.css">
+</head>
+<body>
+    <div class="app">
+        <!-- 侧边栏 -->
+        <aside class="sidebar">
+            <div class="logo">
+                <span class="logo-icon">🎭</span>
+                <div>
+                    <h1>幻象机</h1>
+                    <p>人设知识库系统</p>
+                </div>
+            </div>
+            <nav class="nav">
+                <button class="nav-item active" data-page="upload">
+                    <span>📤</span> 资料上传
+                </button>
+                <button class="nav-item" data-page="persona">
+                    <span>👤</span> 人设管理
+                </button>
+                <button class="nav-item" data-page="knowledge">
+                    <span>🧠</span> 知识库
+                </button>
+                <button class="nav-item" data-page="chat">
+                    <span>💬</span> 对话测试
+                </button>
+                <button class="nav-item" data-page="phantom">
+                    <span>🔌</span> 幻象机接入
+                </button>
+            </nav>
+            <div class="sidebar-footer">
+                <div class="stats" id="sidebar-stats">
+                    <div class="stat-item">
+                        <span class="stat-label">知识块</span>
+                        <span class="stat-value" id="stat-chunks">-</span>
+                    </div>
+                    <div class="stat-item">
+                        <span class="stat-label">人设数</span>
+                        <span class="stat-value" id="stat-personas">-</span>
+                    </div>
+                </div>
+            </div>
+        </aside>
+
+        <!-- 主内容区 -->
+        <main class="main">
+            <!-- 上传页 -->
+            <section class="page active" id="page-upload">
+                <div class="page-header">
+                    <h2>资料上传</h2>
+                    <p>上传微信聊天记录、Word文档、图片、视频或文本文件，自动解析并构建知识库</p>
+                </div>
+
+                <div class="upload-area" id="upload-area">
+                    <div class="upload-placeholder">
+                        <div class="upload-icon">📁</div>
+                        <p>拖拽文件到此处，或 <span class="link">点击选择文件</span></p>
+                        <p class="upload-hint">支持 .txt .csv .json .html .docx .jpg .png .mp4 等格式</p>
+                    </div>
+                    <input type="file" id="file-input" multiple hidden>
+                </div>
+
+                <div class="file-list" id="file-list"></div>
+
+                <div class="upload-actions">
+                    <button class="btn btn-primary" id="btn-parse" disabled>
+                        开始解析并加入知识库
+                    </button>
+                    <button class="btn btn-ghost" id="btn-clear-files">清空列表</button>
+                </div>
+
+                <div class="parse-result" id="parse-result"></div>
+            </section>
+
+            <!-- 人设管理页 -->
+            <section class="page" id="page-persona">
+                <div class="page-header">
+                    <h2>人设管理</h2>
+                    <p>从已上传的资料中提取人物画像，用于AI模仿</p>
+                </div>
+
+                <div class="card">
+                    <h3>提取新人设</h3>
+                    <div class="form-group">
+                        <label>人设名称</label>
+                        <input type="text" id="persona-name" placeholder="给这个人设起个名字">
+                    </div>
+                    <div class="form-group">
+                        <label>目标发送人 <span class="hint">（微信聊天记录中要分析的对象，留空则取发言最多的人）</span></label>
+                        <input type="text" id="target-sender" placeholder="如：张三">
+                    </div>
+                    <div class="form-group">
+                        <label>分析文件</label>
+                        <div class="file-checkbox-list" id="file-checkbox-list">
+                            <span class="hint">请先在「资料上传」页面上传并解析文件</span>
+                        </div>
+                    </div>
+                    <button class="btn btn-primary" id="btn-extract-persona">
+                        开始提取人设
+                    </button>
+                </div>
+
+                <div class="persona-list" id="persona-list"></div>
+            </section>
+
+            <!-- 知识库页 -->
+            <section class="page" id="page-knowledge">
+                <div class="page-header">
+                    <h2>知识库</h2>
+                    <p>查看和检索已构建的知识库</p>
+                </div>
+
+                <div class="card">
+                    <div class="knowledge-stats" id="knowledge-stats">
+                        <div class="stat-card">
+                            <span class="stat-card-label">总知识块</span>
+                            <span class="stat-card-value" id="ks-total">-</span>
+                        </div>
+                        <div class="stat-card">
+                            <span class="stat-card-label">来源类型</span>
+                            <span class="stat-card-value" id="ks-types">-</span>
+                        </div>
+                        <div class="stat-card">
+                            <span class="stat-card-label">向量模型</span>
+                            <span class="stat-card-value" id="ks-model">-</span>
+                        </div>
+                    </div>
+                    <button class="btn btn-danger" id="btn-clear-knowledge">清空知识库</button>
+                </div>
+
+                <div class="card">
+                    <h3>知识检索</h3>
+                    <div class="search-box">
+                        <input type="text" id="search-query" placeholder="输入检索关键词...">
+                        <button class="btn btn-primary" id="btn-search">检索</button>
+                    </div>
+                    <div class="search-results" id="search-results"></div>
+                </div>
+            </section>
+
+            <!-- 对话测试页 -->
+            <section class="page" id="page-chat">
+                <div class="page-header">
+                    <h2>对话测试</h2>
+                    <p>选择人设，测试AI模仿效果</p>
+                </div>
+
+                <div class="chat-container">
+                    <div class="chat-sidebar">
+                        <label>选择人设</label>
+                        <select id="chat-persona-select">
+                            <option value="">请先创建设定...</option>
+                        </select>
+                        <label class="checkbox-label">
+                            <input type="checkbox" id="chat-use-knowledge" checked>
+                            使用知识库上下文
+                        </label>
+                    </div>
+                    <div class="chat-main">
+                        <div class="chat-messages" id="chat-messages">
+                            <div class="chat-msg bot">
+                                <div class="msg-avatar">🤖</div>
+                                <div class="msg-content">选择人设后开始对话，我会尝试模仿该人物的说话风格～</div>
+                            </div>
+                        </div>
+                        <div class="chat-input">
+                            <textarea id="chat-input" placeholder="输入消息..." rows="1"></textarea>
+                            <button class="btn btn-primary" id="btn-send">发送</button>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- 幻象机接入页 -->
+            <section class="page" id="page-phantom">
+                <div class="page-header">
+                    <h2>幻象机接入</h2>
+                    <p>将人设和知识库接入幻象机系统</p>
+                </div>
+
+                <div class="card">
+                    <h3>接入说明</h3>
+                    <p>幻象机可以通过以下API获取人设prompt和记忆上下文，实现人物模仿：</p>
+                    <div class="api-list">
+                        <div class="api-item">
+                            <span class="method GET">GET</span>
+                            <code>/api/phantom/list</code>
+                            <span class="api-desc">获取所有可用人设列表</span>
+                        </div>
+                        <div class="api-item">
+                            <span class="method GET">GET</span>
+                            <code>/api/phantom/persona/{persona_id}</code>
+                            <span class="api-desc">获取指定人设的完整prompt</span>
+                        </div>
+                        <div class="api-item">
+                            <span class="method POST">POST</span>
+                            <code>/api/phantom/context/{persona_id}</code>
+                            <span class="api-desc">获取与用户消息相关的记忆上下文</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="card">
+                    <h3>人设列表</h3>
+                    <div id="phantom-persona-list"></div>
+                </div>
+
+                <div class="card">
+                    <h3>人设Prompt预览</h3>
+                    <pre class="prompt-preview" id="prompt-preview">选择上方人设查看完整Prompt</pre>
+                </div>
+            </section>
+        </main>
+    </div>
+
+    <script src="/static/js/app.js"></script>
+</body>
+</html>
